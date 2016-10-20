@@ -10,33 +10,9 @@ namespace BigBangTheoryGame
     {
         Game game = new Game();
         public string name;
-        public string choice;
+        public int choice;
         public int score = 0;
 
-        public virtual void GetPlayerChoice()
-        {
-            DisplayUserChoices();
-            choice = Console.ReadLine().ToUpper();
-            choice = CheckPlayerChoice(choice);
-        }
-        private string CheckPlayerChoice(string userInput)
-        {
-            switch (userInput)
-            {
-                case "ROCK":
-                    return userInput;
-                case "PAPER":
-                    return userInput;
-                case "SCISSORS":
-                    return userInput;
-                case "LIZARD":
-                    return userInput;
-                case "SPOCK":
-                    return userInput;
-                default:
-                    return userInput = "INVALID";
-            }
-        }
         private void DisplayUserChoices()
         {
             Console.WriteLine("Rock");
@@ -45,6 +21,37 @@ namespace BigBangTheoryGame
             Console.WriteLine("Lizard");
             Console.WriteLine("Spock");
             Console.WriteLine("ENTER YOUR CHOICE");
+        }
+        public virtual void GetPlayerChoice()
+        {
+            DisplayUserChoices();
+            string userInput = Console.ReadLine().ToUpper();
+            CheckPlayerChoice(userInput);
+        }
+        private void CheckPlayerChoice(string userInput)
+        {
+            switch (userInput)
+            {
+                case "ROCK":
+                    choice = 0;
+                    break;
+                case "PAPER":
+                    choice = 1;
+                    break;
+                case "SCISSORS":
+                    choice = 2;
+                    break;
+                case "SPOCK":
+                    choice = 3;
+                    break;
+                case "LIZARD":
+                    choice = 4;
+                    break;
+                default:
+                    choice = 5;
+                    Console.WriteLine("INVALID INPUT");
+                    break;
+            }
         }
     }
 }

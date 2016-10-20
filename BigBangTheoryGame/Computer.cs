@@ -14,10 +14,9 @@ namespace BigBangTheoryGame
         }
         public override void GetPlayerChoice()
         {
-            List<string> choices = new List<string>() { "ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK" };
+            //ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK" };
             Random random = new Random();
-            int number = random.Next(0, 5);
-            choice = choices[number];
+            choice = random.Next(0, 5);
         }
     }
 }
