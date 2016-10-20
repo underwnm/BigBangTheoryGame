@@ -15,43 +15,34 @@ namespace BigBangTheoryGame
 
         private void DisplayUserChoices()
         {
-            Console.WriteLine("Rock");
-            Console.WriteLine("Paper");
-            Console.WriteLine("Scissors");
-            Console.WriteLine("Lizard");
-            Console.WriteLine("Spock");
+            Console.WriteLine("1. Rock");
+            Console.WriteLine("2. Paper");
+            Console.WriteLine("3. Scissors");
+            Console.WriteLine("4. Spock");
+            Console.WriteLine("5. Lizard");
             Console.WriteLine("ENTER YOUR CHOICE");
         }
         public virtual void GetPlayerChoice()
         {
-            DisplayUserChoices();
-            string userInput = Console.ReadLine().ToUpper();
-            CheckPlayerChoice(userInput);
-        }
-        private void CheckPlayerChoice(string userInput)
-        {
-            switch (userInput)
+            try
             {
-                case "ROCK":
-                    choice = 0;
-                    break;
-                case "PAPER":
-                    choice = 1;
-                    break;
-                case "SCISSORS":
-                    choice = 2;
-                    break;
-                case "SPOCK":
-                    choice = 3;
-                    break;
-                case "LIZARD":
-                    choice = 4;
-                    break;
-                default:
-                    choice = 5;
-                    Console.WriteLine("INVALID INPUT");
-                    break;
+                DisplayUserChoices();
+                choice = Convert.ToInt32(Console.ReadLine()) - 1;
+
+                if (choice > 4 || choice < 0)
+                {
+                    throw new Exception();
+                }
             }
-        }
+            catch (Exception)
+            {
+                Console.Clear();
+                Console.WriteLine("INVALID ENTRY \nPRESS ENTER TO CONTINUE");
+                Console.ReadKey();
+                Console.Clear();
+                Console.WriteLine("RE-ENTER a valid choice");
+                GetPlayerChoice();
+            }
+        }        
     }
 }

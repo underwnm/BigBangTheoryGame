@@ -16,7 +16,7 @@ namespace BigBangTheoryGame
         {
             //ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK" };
             Random random = new Random();
-            choice = random.Next(0, 5);
+            choice = random.Next(0, 4);
         }
     }
 }
