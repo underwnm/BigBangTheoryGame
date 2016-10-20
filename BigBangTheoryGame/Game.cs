@@ -8,275 +8,318 @@ namespace BigBangTheoryGame
 {
     class Game
     {
-        List<string> options = new List<string>() { "ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK" };
-        public string userInput;
-        public string userOneChoice;
-        //public string userTwoChoice;
-        public string computerChoice;
-        public bool keepPlaying = true;
-        public int computerScore = 0;
-        public int userOneScore = 0;
-        //public int userTwoScore;
+        Players playerOne;
+        Players playerTwo;
+        private bool keepPlaying = true;
+        private bool round = true;
+        private string name;
+        private string gameMode;
 
-        public void ExecuteGame()
+        public void ExecuteGameOptions()
         {
+            DisplayGameOptions();
+            ExecuteStartOfRound();
+            DisplayGameOptions();
+        }
+        private void DisplayGameOptions()
+        {
+            Console.WriteLine("ENTER NUMBER FOR GAME MODE");
+            Console.WriteLine("1. Single Player");
+            Console.WriteLine("2. Two Players");
+            Console.WriteLine("3. Exit");
+            gameMode = Console.ReadLine();
+        }
+        private void ExecuteStartOfRound()
+        {
+            GetPlayerName();
             while (keepPlaying)
             {
-                DisplayScore();
-                DisplayUserChoices();
-                GetUserInput();
-                userOneChoice = CheckUserInput(userInput);
-                if (userOneChoice != "INVALID")
-                {
-                    GetComputerChoice();
-                    GetYouTie();
-                    GetYouWon();
-                    GetYouLose();
-                }
-                else
-                {
-                    Console.WriteLine("INVALID ENTRY");
-                }
-                if (userOneScore == 2 || computerScore == 2)
-                {
-                    keepPlaying = false;
-                }
+                DisplayPlayerChoices();
+                CheckGameMode();
+                CheckForWinner();
             }
             DisplayWinner();
         }
-        public void ProceedWithGame()
+        private void DisplayPlayerChoices()
+        {
+            DisplayScore();
+            Console.WriteLine("{0} ENTER ONE OF THE FOLLOWING", playerOne.name);
+            playerOne.GetPlayerChoice();
+            ProceedWithGame();
+            if (gameMode == "2")
+            {
+                Console.WriteLine("{0} ENTER ONE OF THE FOLLOWING", playerTwo.name);
+            }
+            playerTwo.GetPlayerChoice();
+        }
+        private void DisplayScore()
+        {
+            Console.WriteLine("{0} SCORE: {1} - {2} SCORE: {3}", playerOne.name, playerOne.score, playerTwo.name, playerTwo.score);
+        }
+        private void CheckGameMode()
+        {
+            if (gameMode == "2")
+            {
+                ProceedWithGame();
+            }
+            if (playerOne.choice != "INVALID" && playerTwo.choice != "INVALID")
+            {
+                CheckTie();
+                CheckWinPlayerOne();
+                CheckWinPlayerTwo();
+            }
+            else
+            {
+                Console.WriteLine("INVALID ENTRY");
+                ProceedWithGame();
+            }
+        }
+        private void CheckForWinner()
+        {
+            if (playerOne.score == 2 || playerTwo.score == 2)
+            {
+                keepPlaying = false;
+            }
+        }
+        private void GetPlayerName()
+        {
+            Console.WriteLine("Enter Name of Player One");
+            name = Console.ReadLine();
+            playerOne = new Human(name);
+
+            if (gameMode == "1")
+            {
+                playerTwo = new Computer("Sheldon Lee Cooper");
+            }
+            else if (gameMode == "2")
+            {
+                Console.WriteLine("Enter Name of Player Two");
+                name = Console.ReadLine();
+                playerTwo = new Human(name);
+            }
+            else if (gameMode =="3")
+            {
+                Environment.Exit(0);
+            }
+            ProceedWithGame();
+
+        }
+        private void ProceedWithGame()
         {
             Console.WriteLine("PRESS ENTER TO CONTINUE");
             Console.ReadKey();
             Console.Clear();
         }
-        public void DisplayScore()
+        private bool CheckTie()
         {
-            Console.WriteLine("USER SCORE: {0} ------ COMPUTER SCORE: {1}", userOneScore, computerScore);
-        }
-        public void DisplayWinner()
-        {
-            if (userOneScore == 2)
+            if (playerOne.choice == playerTwo.choice)
             {
-                Console.WriteLine("CONGRATS YOU WON");
-            }
-            else if (computerScore == 2)
-            {
-                Console.WriteLine("YOU LOSE AND THE COMPUTER WINS");
-            }
-        }
-        public void DisplayUserChoices()
-        {
-            Console.WriteLine("Enter one of the following");
-            Console.WriteLine("Rock");
-            Console.WriteLine("Paper");
-            Console.WriteLine("Scissors");
-            Console.WriteLine("Lizard");
-            Console.WriteLine("Spock");
-            Console.WriteLine("YOUR CHOICE:\t");
-        }
-        public void GetUserInput()
-        {
-            userInput = Console.ReadLine().ToUpper();
-        }
-        public string CheckUserInput(string userInput)
-        {
-            switch (userInput)
-            {
-                case "ROCK":
-                    return userInput;
-                case "PAPER":
-                    return userInput;
-                case "SCISSORS":
-                    return userInput;
-                case "LIZARD":
-                    return userInput;
-                case "SPOCK":
-                    return userInput;
-                default:
-                    return userInput = "INVALID";
-            }
-        }
-        public void GetComputerChoice()
-        {
-            Random r = new Random();
-            int number = r.Next(5);
-            computerChoice = options[number];            
-        }
-        public void GetYouTie()
-        {
-            if (userOneChoice == computerChoice)
-            {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {1}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("It's a tie");
+                round = false;
                 ProceedWithGame();
             }
+            return round;
         }
-        public void GetYouWon()
+        private bool CheckWinPlayerOne()
         {
-            if (userOneChoice == "SCISSORS" && computerChoice == "PAPER")
+            if (playerOne.choice == "SCISSORS" && playerTwo.choice == "PAPER")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Scissors cuts Paper");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "PAPER" && computerChoice == "ROCK")
+            else if (playerOne.choice == "PAPER" && playerTwo.choice == "ROCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Paper covers Rock");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "ROCK" && computerChoice == "LIZARD")
+            else if (playerOne.choice == "ROCK" && playerTwo.choice == "LIZARD")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Rock crushes Lizard");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "LIZARD" && computerChoice == "SPOCK")
+            else if (playerOne.choice == "LIZARD" && playerTwo.choice == "SPOCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Lizard poisons Spock");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "SPOCK" && computerChoice == "SCISSORS")
+            else if (playerOne.choice == "SPOCK" && playerTwo.choice == "SCISSORS")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Spock smashes Scissors");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "SCISSORS" && computerChoice == "LIZARD")
+            else if (playerOne.choice == "SCISSORS" && playerTwo.choice == "LIZARD")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Scissors decapitates Lizard");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "LIZARD" && computerChoice == "PAPER")
+            else if (playerOne.choice == "LIZARD" && playerTwo.choice == "PAPER")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Lizard eats Paper");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "PAPER" && computerChoice == "SPOCK")
+            else if (playerOne.choice == "PAPER" && playerTwo.choice == "SPOCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Paper disproves Spock");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (userOneChoice == "SPOCK" && computerChoice == "ROCK")
+            else if (playerOne.choice == "SPOCK" && playerTwo.choice == "ROCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Spock vaporizes Rock");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "ROCK" && userOneChoice == "SCISSORS")
+            else if (playerOne.choice == "ROCK" && playerTwo.choice == "SCISSORS")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerOne.name, playerOne.choice, playerTwo.name, playerTwo.choice);
                 Console.WriteLine("Rock crushes Scissors");
-                Console.WriteLine("YOU WIN!!");
-                userOneScore++;
+                Console.WriteLine("{0} you WON this round!!", playerOne.name);
+                playerOne.score++;
+                round = false;
                 ProceedWithGame();
             }
+            return round;
         }
-        public void GetYouLose()
+        private bool CheckWinPlayerTwo()
         {
-            if ((computerChoice == "SCISSORS") && (userOneChoice == "PAPER"))
+            if (playerTwo.choice == "SCISSORS" && playerOne.choice == "PAPER")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Scissors cuts Paper");
-                Console.WriteLine("YOU LOSE!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "PAPER" && userOneChoice == "ROCK")
+            else if (playerTwo.choice == "PAPER" && playerOne.choice == "ROCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Paper covers Rock");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "ROCK" && userOneChoice == "LIZARD")
+            else if (playerTwo.choice == "ROCK" && playerOne.choice == "LIZARD")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Rock crushes Lizard");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "LIZARD" && userOneChoice == "SPOCK")
+            else if (playerTwo.choice == "LIZARD" && playerOne.choice == "SPOCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Lizard poisons Spock");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "SPOCK" && userOneChoice == "SCISSORS")
+            else if (playerTwo.choice == "SPOCK" && playerOne.choice == "SCISSORS")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Spock smashes Scissors");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "SCISSORS" && userOneChoice == "LIZARD")
+            else if (playerTwo.choice == "SCISSORS" && playerOne.choice == "LIZARD")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Scissors decapitates Lizard");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "LIZARD" && userOneChoice == "PAPER")
+            else if (playerTwo.choice == "LIZARD" && playerOne.choice == "PAPER")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Lizard eats Paper");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "PAPER" && userOneChoice == "SPOCK")
+            else if (playerTwo.choice == "PAPER" && playerOne.choice == "SPOCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Paper disproves Spock");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "SPOCK" && userOneChoice == "ROCK")
+            else if (playerTwo.choice == "SPOCK" && playerOne.choice == "ROCK")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Spock vaporizes Rock");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
-            else if (computerChoice == "ROCK" && userOneChoice == "SCISSORS")
+            else if (playerTwo.choice == "ROCK" && playerOne.choice == "SCISSORS")
             {
-                Console.WriteLine("User has chosen {0} and computer {1}.", userOneChoice, computerChoice);
+                Console.WriteLine("{0} chose {1} and {2} chose {3}.", playerTwo.name, playerTwo.choice, playerOne.name, playerOne.choice);
                 Console.WriteLine("Rock crushes Scissors");
-                Console.WriteLine("YOU LOSE!!");
-                computerScore++;
+                Console.WriteLine("{0} you WON this round!!", playerTwo.name);
+                playerTwo.score++;
+                round = false;
                 ProceedWithGame();
             }
+            return round;
+        }
+        private void DisplayWinner()
+        {
+            if (playerOne.score == 2)
+            {
+                Console.WriteLine("CONGRATS {0} YOU WON THE BEST 2 OUT OF 3", playerOne.name);
+            }
+            else if (playerTwo.score == 2)
+            {
+                Console.WriteLine("CONGRATS {0} YOU WON THE BEST 2 OUT OF 3", playerTwo.name);
+            }
+            ProceedWithGame();
         }
     }
 }

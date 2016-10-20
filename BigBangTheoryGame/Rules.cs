@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace BigBangTheoryGame
 {
-    class Program
+    class Rules
     {
-        static void Main(string[] args)
-        {           
-            Game game = new Game();
-            game.ExecuteGameOptions();
-        }
     }
 }
