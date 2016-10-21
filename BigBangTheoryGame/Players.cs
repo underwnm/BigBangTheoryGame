@@ -37,7 +37,7 @@ namespace BigBangTheoryGame
             catch (Exception)
             {
                 Console.Clear();
-                Console.WriteLine("INVALID ENTRY \nPRESS ENTER TO CONTINUE");
+                Console.WriteLine("*ERROR: invalid choice \nPRESS ENTER TO CONTINUE");
                 Console.ReadKey();
                 Console.Clear();
                 Console.WriteLine("RE-ENTER a valid choice");

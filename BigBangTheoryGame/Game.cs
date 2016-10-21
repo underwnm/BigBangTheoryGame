@@ -10,8 +10,8 @@ namespace BigBangTheoryGame
     {
         Players playerOne;
         Players playerTwo;
-        private bool keepPlaying = true;
-        private bool continuePlaying = true;
+        private bool keepPlaying;
+        private bool continuePlaying;
         private bool correctPlayerName;
         private string name;
         private int gameMode;
@@ -20,20 +20,13 @@ namespace BigBangTheoryGame
 
         public void ExecuteGameOptions()
         {
-            while (continuePlaying)
+            continuePlaying = true;
+            while (continuePlaying == true)
             {
+                keepPlaying = true;
                 DisplayGameOptions();
-                CheckIfContine();
-                if (gameMode <= 3 && gameMode >= 1)
-                {
-                    ExecuteStartOfRound();
-                }
-                else if (gameMode > 3 || gameMode < 1)
-                { 
-                    Console.Clear();
-                    Console.WriteLine("ERROR: Must input number for game mode.");
-                    ProceedWithGame();
-                }
+                CheckIfContinue();
+                ExecuteStartOfRound();
             }
         }
         private void DisplayGameOptions()
@@ -53,9 +46,8 @@ namespace BigBangTheoryGame
             catch (Exception)
             {
                 Console.Clear();
-                Console.WriteLine("INVALID ENTRY \nPRESS ENTER TO CONTINUE");
-                Console.ReadKey();
-                Console.Clear();
+                Console.WriteLine("*ERROR: invalid game mode choice");
+                ProceedWithGame();
                 DisplayGameOptions();
             }
         }
@@ -116,13 +108,6 @@ namespace BigBangTheoryGame
             playerOneChoice = choices[playerOne.choice];
             playerTwoChoice = choices[playerTwo.choice];
         }
-        private void CheckForGameWinner()
-        {
-            if (playerOne.score == 2 || playerTwo.score == 2)
-            {
-                keepPlaying = false;
-            }
-        }
         private void GetPlayerOneName()
         {
             Console.WriteLine("Enter Name of Player One");
@@ -166,11 +151,18 @@ namespace BigBangTheoryGame
             }
             ProceedWithGame();
         }
-        private void CheckIfContine()
+        private void CheckForGameWinner()
+        {
+            if (playerOne.score == 2 || playerTwo.score == 2)
+            {
+                keepPlaying = false;
+            }
+        }
+        private void CheckIfContinue()
         {
             if (gameMode == 3)
             {
-                continuePlaying = false;
+                Environment.Exit(0);
             }
         }
         private void CheckNameInput()
