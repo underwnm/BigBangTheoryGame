@@ -8,8 +8,8 @@ namespace BigBangTheoryGame
 {
     class Game
     {
-        Players playerOne;
-        Players playerTwo;
+        Player playerOne;
+        Player playerTwo;
         private bool round;
         private bool game;
         private bool playerName;
@@ -25,6 +25,7 @@ namespace BigBangTheoryGame
             {
                 round = true;
                 DisplayGameOptions();
+                CheckGameModeUserInput();
                 CheckIfContinuePlaying();
                 ExecuteStartOfRound();
             }
@@ -32,8 +33,8 @@ namespace BigBangTheoryGame
         private void ExecuteStartOfRound()
         {
             Console.Clear();
-            GetPlayerOneName();
-            GetPlayerTwoName();
+            playerName = true;
+            CreatePlayers();
             while (round)
             {
                 DisplayWhosTurn();
@@ -50,6 +51,9 @@ namespace BigBangTheoryGame
             Console.WriteLine("1. Single Player");
             Console.WriteLine("2. Two Players");
             Console.WriteLine("3. Exit");
+        }
+        private void CheckGameModeUserInput()
+        {
             try
             {
                 gameMode = Convert.ToInt32(Console.ReadLine());
@@ -93,29 +97,64 @@ namespace BigBangTheoryGame
             }
             ProceedWithGame();
         }
-        private void GetPlayerOneName()
+        private void GetPlayerName()
         {
-            Console.WriteLine("Enter Name of Player One");
-            name = Console.ReadLine();
-            playerOne = new Human(name);
-            playerName = true;
-            CheckNameInput();
-            Console.Clear();
+            DisplayEnterName();
+            name = Console.ReadLine();         
         }
-        private void GetPlayerTwoName()
+        private void CreatePlayers()
         {
             if (gameMode == 1)
             {
-                playerTwo = new Computer("Sheldon Lee Cooper");
+                GetPlayerName();
+                CheckNameInput();              
+                playerOne = new Human(name);
+                playerTwo = new Computer();
+                Console.Clear();
             }
             else if (gameMode == 2)
             {
-                Console.WriteLine("Enter Name of Player Two");
-                name = Console.ReadLine();
-                playerTwo = new Human(name);
-                playerName = false;
-                CheckNameInput();
+                name = "";
+                while (playerName == true && name == "")
+                {
+                    GetPlayerName();
+                    CheckNameInput();
+                    playerOne = new Human(name);
+                    Console.Clear();
+                }
+                while (playerName == false)
+                {
+                    GetPlayerName();
+                    CheckNameInput();
+                    playerName = true;
+                    playerTwo = new Human(name);
+                    Console.Clear();
+                }
+            }
+        }
+        private void DisplayEnterName()
+        {
+            if (playerName == true)
+            {
+                Console.WriteLine("Enter Player One Name");
+            }
+            else if (playerName == false)
+            {
+                Console.WriteLine("Enter Player Two Name");
+            }
+        }
+        private void CheckNameInput()
+        {
+            if (name == "")
+            {
                 Console.Clear();
+                Console.WriteLine("*ERROR: no name entered");
+                ProceedWithGame();
+                CreatePlayers();
+            }
+            else
+            {
+                playerName = false;
             }
         }
         private void GetRoundWinner()
@@ -137,23 +176,6 @@ namespace BigBangTheoryGame
             {
                 Console.WriteLine("{0} chose {1} and {2} chose {3}", playerOne.name, playerOneChoice, playerTwo.name, playerTwoChoice);
                 Console.WriteLine("{0} and {1} TIED!!", playerOne.name, playerTwo.name);
-            }
-        }
-        private void CheckNameInput()
-        {
-            if (name == "")
-            {
-                Console.Clear();
-                Console.WriteLine("*ERROR: no name entered");
-                ProceedWithGame();
-                if (playerName)
-                {
-                    GetPlayerOneName();
-                }
-                else
-                {
-                    GetPlayerTwoName();
-                }
             }
         }
         private void CheckForGameWinner()

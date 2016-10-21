@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BigBangTheoryGame
 {
-    class Human : Players
+    class Human : Player
     {
         public Human(string name)
         {

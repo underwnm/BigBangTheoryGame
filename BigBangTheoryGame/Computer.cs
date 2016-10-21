@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BigBangTheoryGame
 {
-    class Computer : Players
+    class Computer : Player
     {
-        public Computer(string name)
+        public Computer()
         {
-            this.name = name;
+            this.name = "Sheldon Cooper";
         }
         public override void GetPlayerChoice()
         {
