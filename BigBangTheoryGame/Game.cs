@@ -70,7 +70,7 @@ namespace BigBangTheoryGame
             while (series)
             {
                 ExecutePlayerTurn();
-                ConvertChoice();
+                ConvertPlayersChoice();
                 GetRoundWinner();
                 CheckForGameWinner();
                 ProceedWithGame();
@@ -150,7 +150,7 @@ namespace BigBangTheoryGame
         {
             Console.WriteLine("{0} SCORE: {1} - {2} SCORE: {3}", playerOne.name, playerOne.score, playerTwo.name, playerTwo.score);
         }
-        private void ConvertChoice()
+        private void ConvertPlayersChoice()
         {
             List<string> choices = new List<string>() { "ROCK", "PAPER", "SCISSORS", "SPOCK", "LIZARD" };
             playerOneChoice = choices[playerOne.choice];
@@ -198,7 +198,7 @@ namespace BigBangTheoryGame
         }
         private void ProceedWithGame()
         {
-            Console.WriteLine("PRESS ENTER TO CONTINUE");
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE");
             Console.ReadKey();
             Console.Clear();
         }
