@@ -14,7 +14,7 @@ namespace BigBangTheoryGame
         }
         public override void GetPlayerChoice()
         {
-            //ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK" };
+            //ROCK", "PAPER", "SCISSORS", "SPOCK", "LIZARD" };
             Random random = new Random();
             choice = random.Next(0, 4);
         }

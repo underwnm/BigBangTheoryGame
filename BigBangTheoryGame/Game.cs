@@ -10,9 +10,9 @@ namespace BigBangTheoryGame
     {
         Players playerOne;
         Players playerTwo;
-        private bool keepPlaying;
-        private bool continuePlaying;
-        private bool correctPlayerName;
+        private bool round;
+        private bool game;
+        private bool playerName;
         private string name;
         private int gameMode;
         private string playerOneChoice;
@@ -20,14 +20,29 @@ namespace BigBangTheoryGame
 
         public void ExecuteGameOptions()
         {
-            continuePlaying = true;
-            while (continuePlaying == true)
+            game = true;
+            while (game == true)
             {
-                keepPlaying = true;
+                round = true;
                 DisplayGameOptions();
-                CheckIfContinue();
+                CheckIfContinuePlaying();
                 ExecuteStartOfRound();
             }
+        }
+        private void ExecuteStartOfRound()
+        {
+            Console.Clear();
+            GetPlayerOneName();
+            GetPlayerTwoName();
+            while (round)
+            {
+                DisplayWhosTurn();
+                ConvertChoice();
+                GetRoundWinner();
+                CheckForGameWinner();
+                ProceedWithGame();
+            }
+            DisplayGameWinner();
         }
         private void DisplayGameOptions()
         {
@@ -51,22 +66,11 @@ namespace BigBangTheoryGame
                 DisplayGameOptions();
             }
         }
-        private void ExecuteStartOfRound()
+        private void DisplayScore()
         {
-            Console.Clear();
-            GetPlayerOneName();
-            GetPlayerTwoName();
-            while (keepPlaying)
-            {
-                DisplayPlayerChoices();
-                ConvertChoice();
-                GetRoundWinner();
-                CheckForGameWinner();
-                ProceedWithGame();
-            }
-            DisplayGameWinner();
+            Console.WriteLine("{0} SCORE: {1} - {2} SCORE: {3}", playerOne.name, playerOne.score, playerTwo.name, playerTwo.score);
         }
-        private void DisplayPlayerChoices()
+        private void DisplayWhosTurn()
         {
             DisplayScore();
             Console.WriteLine("It's {0}'s turn to choose.", playerOne.name);
@@ -77,9 +81,42 @@ namespace BigBangTheoryGame
             playerTwo.GetPlayerChoice();
             Console.Clear();
         }
-        private void DisplayScore()
+        private void DisplayGameWinner()
         {
-            Console.WriteLine("{0} SCORE: {1} - {2} SCORE: {3}", playerOne.name, playerOne.score, playerTwo.name, playerTwo.score);
+            if (playerOne.score == 2)
+            {
+                Console.WriteLine("{0} defeated {1} with a score of {2} to {3}", playerOne.name, playerTwo.name, playerOne.score, playerTwo.score);
+            }
+            else if (playerTwo.score == 2)
+            {
+                Console.WriteLine("{0} defeated {1} with a score of {2} to {3}", playerTwo.name, playerOne.name, playerTwo.score, playerOne.score);
+            }
+            ProceedWithGame();
+        }
+        private void GetPlayerOneName()
+        {
+            Console.WriteLine("Enter Name of Player One");
+            name = Console.ReadLine();
+            playerOne = new Human(name);
+            playerName = true;
+            CheckNameInput();
+            Console.Clear();
+        }
+        private void GetPlayerTwoName()
+        {
+            if (gameMode == 1)
+            {
+                playerTwo = new Computer("Sheldon Lee Cooper");
+            }
+            else if (gameMode == 2)
+            {
+                Console.WriteLine("Enter Name of Player Two");
+                name = Console.ReadLine();
+                playerTwo = new Human(name);
+                playerName = false;
+                CheckNameInput();
+                Console.Clear();
+            }
         }
         private void GetRoundWinner()
         {
@@ -102,77 +139,14 @@ namespace BigBangTheoryGame
                 Console.WriteLine("{0} and {1} TIED!!", playerOne.name, playerTwo.name);
             }
         }
-        private void ConvertChoice()
-        {            
-            List<string> choices = new List<string>() { "ROCK", "PAPER", "SCISSORS", "SPOCK", "LIZARD" };
-            playerOneChoice = choices[playerOne.choice];
-            playerTwoChoice = choices[playerTwo.choice];
-        }
-        private void GetPlayerOneName()
-        {
-            Console.WriteLine("Enter Name of Player One");
-            name = Console.ReadLine();
-            playerOne = new Human(name);
-            correctPlayerName = true;
-            CheckNameInput();
-            Console.Clear(); 
-        }
-        private void GetPlayerTwoName()
-        {
-            if (gameMode == 1)
-            {
-                playerTwo = new Computer("Sheldon Lee Cooper");
-            }
-            else if (gameMode == 2)
-            {
-                Console.WriteLine("Enter Name of Player Two");
-                name = Console.ReadLine();
-                playerTwo = new Human(name);
-                correctPlayerName = false;
-                CheckNameInput();
-                Console.Clear();
-            }
-        }
-        private void ProceedWithGame()
-        {
-            Console.WriteLine("PRESS ENTER TO CONTINUE");
-            Console.ReadKey();
-            Console.Clear();
-        }
-        private void DisplayGameWinner()
-        {
-            if (playerOne.score == 2)
-            {
-                Console.WriteLine("CONGRATS {0} YOU WON THE BEST 2 OUT OF 3", playerOne.name);
-            }
-            else if (playerTwo.score == 2)
-            {
-                Console.WriteLine("CONGRATS {0} YOU WON THE BEST 2 OUT OF 3", playerTwo.name);
-            }
-            ProceedWithGame();
-        }
-        private void CheckForGameWinner()
-        {
-            if (playerOne.score == 2 || playerTwo.score == 2)
-            {
-                keepPlaying = false;
-            }
-        }
-        private void CheckIfContinue()
-        {
-            if (gameMode == 3)
-            {
-                Environment.Exit(0);
-            }
-        }
         private void CheckNameInput()
         {
             if (name == "")
             {
                 Console.Clear();
-                Console.WriteLine("INVALID no name entered for Player One");
+                Console.WriteLine("*ERROR: no name entered");
                 ProceedWithGame();
-                if (correctPlayerName)
+                if (playerName)
                 {
                     GetPlayerOneName();
                 }
@@ -181,6 +155,32 @@ namespace BigBangTheoryGame
                     GetPlayerTwoName();
                 }
             }
+        }
+        private void CheckForGameWinner()
+        {
+            if (playerOne.score == 2 || playerTwo.score == 2)
+            {
+                round = false;
+            }
+        }
+        private void CheckIfContinuePlaying()
+        {
+            if (gameMode == 3)
+            {
+                Environment.Exit(0);
+            }
+        }
+        private void ConvertChoice()
+        {
+            List<string> choices = new List<string>() { "ROCK", "PAPER", "SCISSORS", "SPOCK", "LIZARD" };
+            playerOneChoice = choices[playerOne.choice];
+            playerTwoChoice = choices[playerTwo.choice];
+        }
+        private void ProceedWithGame()
+        {
+            Console.WriteLine("PRESS ENTER TO CONTINUE");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }

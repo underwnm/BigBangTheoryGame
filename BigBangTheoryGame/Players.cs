@@ -13,20 +13,11 @@ namespace BigBangTheoryGame
         public int choice;
         public int score = 0;
 
-        private void DisplayUserChoices()
-        {
-            Console.WriteLine("1. Rock");
-            Console.WriteLine("2. Paper");
-            Console.WriteLine("3. Scissors");
-            Console.WriteLine("4. Spock");
-            Console.WriteLine("5. Lizard");
-            Console.WriteLine("ENTER YOUR CHOICE");
-        }
         public virtual void GetPlayerChoice()
         {
             try
             {
-                DisplayUserChoices();
+                DisplayPlayerChoices();
                 choice = Convert.ToInt32(Console.ReadLine()) - 1;
 
                 if (choice > 4 || choice < 0)
@@ -40,9 +31,18 @@ namespace BigBangTheoryGame
                 Console.WriteLine("*ERROR: invalid choice \nPRESS ENTER TO CONTINUE");
                 Console.ReadKey();
                 Console.Clear();
-                Console.WriteLine("RE-ENTER a valid choice");
+                Console.WriteLine("RE-ENTER a valid number for your choice");
                 GetPlayerChoice();
             }
-        }        
+        }
+        private void DisplayPlayerChoices()
+        {
+            Console.WriteLine("1. Rock");
+            Console.WriteLine("2. Paper");
+            Console.WriteLine("3. Scissors");
+            Console.WriteLine("4. Spock");
+            Console.WriteLine("5. Lizard");
+            Console.WriteLine("ENTER YOUR CHOICE");
+        }
     }
 }
